@@ -60,7 +60,7 @@ class MyDriver(Driver):
         v_x = 80
 
         self.accelerate(carstate, v_x, command)
-
+        #sdfskfsdfssdgfasdfasd
         if self.data_logger:
             self.data_logger.log(carstate, command)
 

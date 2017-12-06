@@ -48,7 +48,7 @@ HIDDEN_UNITS1 = 300
 OUTPUT_DIM = data_matrix_output_shape[1]
 #HIDDEN2_UNITS = 600
 BATCH_SIZE = 64
-ITERATIONS = 1000
+ITERATIONS = 100000
 
 LEARNING_RATE = 1e-3
 
@@ -86,10 +86,10 @@ optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 for i in range(ITERATIONS):
 
-    output_prediction = model(input_tensor)
+    output_prediction = model(input_tensor[(ITERATIONS*BATCH_SIZE)%input_tensor.data.shape[0]:(ITERATIONS*BATCH_SIZE)%input_tensor.data.shape[0]+BATCH_SIZE])
 
     # Compute and print loss.
-    loss = loss_function(output_prediction, output_tensor)
+    loss = loss_function(output_prediction, output_tensor[(ITERATIONS*BATCH_SIZE)%input_tensor.data.shape[0]:(ITERATIONS*BATCH_SIZE)%input_tensor.data.shape[0]+BATCH_SIZE])
     if i % 100 == 0:
         print(i, loss.data[0])
 
@@ -101,4 +101,4 @@ for i in range(ITERATIONS):
 
 print(model(input_tensor[0].unsqueeze(0)))
 #model.save_state_dict('torcs_ANN')
-torch.save(model, 'torcs_ANN')
+torch.save(model, 'torcs_ANN2')

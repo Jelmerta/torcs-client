@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
+import math
 
 model = torch.nn.Sequential()
 model = torch.load('torcs_ANN')
@@ -31,7 +32,7 @@ class MyDriver(Driver):
 
         command = Command()
 
-        speed = np.sqrt(carstate.speed_x**2 + carstate.speed_y**2 + carstate.speed_z**2)
+        speed = carstate.speed_x #np.sqrt(carstate.speed_x**2 + carstate.speed_y**2 + carstate.speed_z**2) ?
         track_position = carstate.distance_from_center
         angle_to_track_axis = carstate.angle
         track_edges = carstate.distances_from_edge
@@ -55,9 +56,10 @@ class MyDriver(Driver):
 
         self.steer(carstate, 0.0, command)
 
-        # ACC_LATERAL_MAX = 6400 * 5
-        # v_x = min(80, math.sqrt(ACC_LATERAL_MAX / abs(command.steering)))
-        v_x = 80
+        ACC_LATERAL_MAX = 6400 * 5
+        v_x = min(80, math.sqrt(ACC_LATERAL_MAX / abs(command.steering)))
+        #print(v_x)
+        #v_x = 140
 
         self.accelerate(carstate, v_x, command)
 
@@ -65,3 +67,11 @@ class MyDriver(Driver):
             self.data_logger.log(carstate, command)
 
         return command#trainNetwork(x, t):
+
+# Genetic algorithm
+# Optimize speed and make it working correctly
+# learning rate
+# BATCH
+# LSTM
+# Swarm (?, probably just mention this in paper)
+# Work on implementation report

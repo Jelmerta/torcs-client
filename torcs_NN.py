@@ -1,4 +1,4 @@
-
+import os
 import numpy as np
 import torch
 import torch.autograd as autograd
@@ -12,10 +12,29 @@ torch.manual_seed(1)
 
 import csv
 
-data_matrix_alpine = np.genfromtxt('../train_data/alpine-1.csv', delimiter=',', skip_header=1, skip_footer=1)
-data_matrix_aalborg = np.genfromtxt('../train_data/aalborg.csv', delimiter=',', skip_header=1, skip_footer=1)
-data_matrix_alpine = np.genfromtxt('../train_data/f-speedway.csv', delimiter=',', skip_header=1, skip_footer=1)
-data_matrix = np.concatenate((data_matrix_alpine, data_matrix_aalborg, data_matrix_alpine), axis=0)
+
+# For data folder
+path = 'train_data/'
+
+data_matrix_list = []
+for filename in os.listdir(path):
+    data = np.genfromtxt(path + filename, delimiter=',', skip_header=1, skip_footer=1)
+    print(data.shape)
+    data_matrix_list.append(np.genfromtxt(path + filename, delimiter=',', skip_header=1, skip_footer=1))
+#
+#
+# data_matrix_alpine = np.genfromtxt('train_data/alpine-1.csv', delimiter=',', skip_header=1, skip_footer=1)
+# data_matrix_aalborg = np.genfromtxt('train_data/aalborg.csv', delimiter=',', skip_header=1, skip_footer=1)
+# data_matrix_alpine = np.genfromtxt('train_data/f-speedway.csv', delimiter=',', skip_header=1, skip_footer=1)
+# data_matrix_alpine = np.genfromtxt('train_data/A_Speedway_34_52.csv', delimiter=',', skip_header=1, skip_footer=1)
+# data_matrix_aalborg = np.genfromtxt('train_data/Corkscrew_01_26_01.csv', delimiter=',', skip_header=1, skip_footer=1)
+# data_matrix_alpine = np.genfromtxt('train_data/GC_track2_59_74.csv', delimiter=',', skip_header=1, skip_footer=1)
+# data_matrix_alpine = np.genfromtxt('train_data/Michigan_41_65.csv', delimiter=',', skip_header=1, skip_footer=1)
+
+#data_matrix = np.concatenate((data_matrix_alpine, data_matrix_aalborg, data_matrix_alpine), axis=0)
+#print(data_matrix_list)
+data_matrix = np.concatenate(data_matrix_list, axis=0)
+
 data_matrix_shape = data_matrix.shape
 data_matrix_input = data_matrix[:,3:]
 data_matrix_input_shape = data_matrix_input.shape
@@ -29,13 +48,13 @@ HIDDEN_UNITS1 = 300
 OUTPUT_DIM = data_matrix_output_shape[1]
 #HIDDEN2_UNITS = 600
 BATCH_SIZE = 64
-ITERATIONS = 300
+ITERATIONS = 1000
 
 LEARNING_RATE = 1e-3
 
 #dtype = torch.FloatTensor  # enable CUDA here if you like
 
-input_tensor = Variable(torch.FloatTensor(data_matrix[:, 3:25]), requires_grad = True)
+input_tensor = Variable(torch.FloatTensor(data_matrix[:, 3:25]), requires_grad = True) #batches here
 output_tensor = Variable(torch.FloatTensor(data_matrix[:, 0:3]), requires_grad = False)
 
 random.shuffle(data_matrix) # TODO just training data
